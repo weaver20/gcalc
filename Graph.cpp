@@ -66,6 +66,9 @@ Graph::Graph(std::string g) {
 Graph::Graph(Graph& graph): vertex(graph.vertex), edges(graph.getEdgeSize()), v(graph.v), e(graph.e) {
 }
 
+Graph::Graph(std::set<std::string> v, std::set<std::pair<std::string, std::string>> e):vertex(v.size()), edges(e.size()),
+v(v), e(e){}
+
 Graph& Graph::operator=(const Graph& graph){
     if(this == &graph){
         return *this;
@@ -77,8 +80,17 @@ Graph& Graph::operator=(const Graph& graph){
     return *this;
 }
 
-Graph Graph::operator+(Graph&){
-    
+Graph Graph::operator+(Graph& graph){
+    std::set<std::string> union_v = this->v;
+    std::set<std::pair<std::string, std::string>> union_e = this->e;
+    for(auto it = graph.v.begin(); it != graph.v.end(); it++){
+        union_v.insert(*it);
+    }
+    for(auto it = graph.e.begin(); it != graph.e.end(); it++){
+        union_e.insert(*it);
+    }
+    Graph result(union_v,union_e);
+    return result;
 }
 
 

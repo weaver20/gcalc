@@ -28,9 +28,13 @@ namespace mtm{
          */
          Graph(Graph&);
          /**
-          * Assignment operator
-          * @return a reference to assigned Graph
+          * C'tor - receives vertex&edges sets and creates a directed graph accordingly
           */
+         Graph(std::set<std::string> v, std::set<std::pair<std::string, std::string>> e);
+        /**
+         * Assignment operator
+         * @return a reference to assigned Graph
+         */
          Graph& operator=(const Graph&);
          /**
           * D'tor
