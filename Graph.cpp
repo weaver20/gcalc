@@ -4,7 +4,12 @@
 
 using namespace mtm;
 
-bool Graph::checkValidity(std::string str) {
+bool checkGraphName(std::string& str){
+    return (not(startsWith(str, "{") and endsWith(str, "}")));
+}
+
+
+bool Graph::checkVertexName(std::string& str) {
     int parantheses = 0;
     for(const char& c : str) {
         if(parantheses < 0){
@@ -26,20 +31,20 @@ bool Graph::checkValidity(std::string str) {
     return true;
 }
 
-Graph::Graph(std::string g) {
-    if (!checkValidity(g)){ //TODO: need to change the condition to check main string validity and not vertex's name validity
-        throw InvalidString();
+Graph::Graph(std::string& g) {
+    if (!checkGraphName(g)){
+        throw InvalidGraphString();
     }
     std::set<std::string> vert;
     std::multimap<std::string, std::string> edge;
     char c = g[1];
     while(c != '|'){
         int pos = g.find(',');
-        std::string sub_str = g.substr(0, --pos);
-        if(!checkValidity(sub_str)){
-            throw InvalidString();
+        std::string candidate_vertex = g.substr(0, --pos);
+        if(!checkVertexName(candidate_vertex)){
+            throw InvalidVertexName();
         }
-        vert.insert(sub_str);
+        vert.insert(candidate_vertex);
         g = g.substr(pos + 1);
         c = g[0];
     }
@@ -49,8 +54,8 @@ Graph::Graph(std::string g) {
         int delimeter = sub_str.find(',');
         std::string v1 = sub_str.substr(0, --delimeter);
         std::string v2 = sub_str.substr(++delimeter);
-        if(!checkValidity(v1) or !checkValidity(v2)){
-            throw InvalidString();
+        if(!checkVertexName(v1) or !checkVertexName(v2)){
+            throw InvalidVertexName();
         }
         if((!vert.count(v1)) or (!vert.count(v2))){
             throw IllegalEdge();
@@ -66,7 +71,7 @@ Graph::Graph(std::string g) {
 Graph::Graph(Graph& graph): vertex(graph.vertex), edges(graph.getEdgeSize()), v(graph.v), e(graph.e) {
 }
 
-Graph::Graph(std::set<std::string> v, std::set<std::pair<std::string, std::string>> e):vertex(v.size()), edges(e.size()),
+Graph::Graph(const std::set<std::string>& v, const std::set<std::pair<std::string, std::string>>& e):vertex(v.size()), edges(e.size()),
 v(v), e(e){}
 
 Graph& Graph::operator=(const Graph& graph){
@@ -83,14 +88,8 @@ Graph& Graph::operator=(const Graph& graph){
 Graph Graph::operator+(Graph& graph){
     std::set<std::string> union_v = this->v;
     std::set<std::pair<std::string, std::string>> union_e = this->e;
-    for(auto it = graph.v.begin(); it != graph.v.end(); it++){
-        union_v.insert(*it);
-    }
-    for(auto it = graph.e.begin(); it != graph.e.end(); it++){
-        union_e.insert(*it);
-    }
-    Graph result(union_v,union_e);
-    return result;
+    union_v.insert(graph.v.begin(), graph.v.end());
+    union_e.insert(graph.e.begin(), graph.e.end());
 }
 
 Graph Graph::operator^(Graph& graph) {
@@ -159,5 +158,27 @@ Graph Graph::operator*(Graph& graph) {
     return product;
 }
 
+Graph Graph::operator!() {
+    std::set<std::string> k_vert = v;
+    std::set<std::pair<std::string, std::string>> k_edge;
+    for(auto it = v.begin(); it != v.end(); it++){
+        for(auto it2 = v.begin(); it2 != v.end(); it2++){
+            if(it != it2){
+                std::pair<std::string, std::string> edge(*it, *it2);
+                k_edge.insert(edge);
+            }
+        }
+    }
+    std::string emp = "{ | }";
+    Graph res(emp);
+    res.v = v;
+    std::set_difference(k_edge.begin(), k_edge.end(),
+                        e.begin(),e.end(), std::inserter(res.e, res.e.begin()));
+    return res;
+}
 
+void Graph::addVertex(std::string &name) {
+
+
+}
 
