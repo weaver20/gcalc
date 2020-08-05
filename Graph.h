@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <vector>
 #include "Auxilaries.h"
+#include "GraphException.h"
 
 
 
@@ -27,7 +28,7 @@ namespace mtm{
          *  C`tor - creates an Graph according to the instructions
          * @param g - a string which represents the vertexes and edges of the graph according to the required format
          */
-        explicit Graph(std::string& g);
+        explicit Graph(std::string g);
         /**
          * Copy C`tor
          */
@@ -66,14 +67,6 @@ namespace mtm{
             */
             Graph operator!();
             /**
-            *  Get Vertexes number in the graph
-            */
-            int getVertSize();
-            /**
-            *  Get Edges number in the graph
-            */
-            int getEdgeSize();
-            /**
             * Add edge
             */
             void addEdge(std::string& origin, std::string& dest);
@@ -85,39 +78,6 @@ namespace mtm{
             * Print function
             */
             void print(std::ostream& out);
-
-            //Exception Classes
-        class InvalidGraphString : public std::exception {
-            public:
-                const char* what() const noexcept override;
-        };
-        class InvalidVertexName : public std::exception {
-        public:
-            const char* what() const noexcept override;
-        };
-        class VertexAlreadyExists : public std::exception {
-        public:
-            const char* what() const noexcept override;
-        };
-        class EdgeAlreadyExists : public std::exception {
-        public:
-            const char* what() const noexcept override;
-        };
-        class IllegalEdge : public std::exception {
-            public:
-                const char* what() const noexcept override;
-        };
-        class ParallelEdge : public std::exception {
-            public:
-                const char* what() const noexcept override;
-        };
-        class SelfCircle : public std::exception {
-        public:
-            const char* what() const noexcept override;
-        };
-
-
-
     };
 
 
