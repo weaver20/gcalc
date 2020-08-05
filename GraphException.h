@@ -1,0 +1,8 @@
+//
+// Created by noam on 05/08/2020.
+//
+
+#ifndef GCALC_GRAPHEXCEPTION_H
+#define GCALC_GRAPHEXCEPTION_H
+
+#endif //GCALC_GRAPHEXCEPTION_H
