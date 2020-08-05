@@ -76,11 +76,15 @@ namespace mtm{
             /**
             * Add edge
             */
-            void addEdge(std::string& name);
+            void addEdge(std::string& origin, std::string& dest);
             /**
             * Add vertex
             */
             void addVertex(std::string& name);
+            /**
+            * Print function
+            */
+            void print(std::ostream& out);
 
             //Exception Classes
         class InvalidGraphString : public std::exception {
@@ -88,6 +92,14 @@ namespace mtm{
                 const char* what() const noexcept override;
         };
         class InvalidVertexName : public std::exception {
+        public:
+            const char* what() const noexcept override;
+        };
+        class VertexAlreadyExists : public std::exception {
+        public:
+            const char* what() const noexcept override;
+        };
+        class EdgeAlreadyExists : public std::exception {
         public:
             const char* what() const noexcept override;
         };
@@ -99,6 +111,11 @@ namespace mtm{
             public:
                 const char* what() const noexcept override;
         };
+        class SelfCircle : public std::exception {
+        public:
+            const char* what() const noexcept override;
+        };
+
 
 
     };

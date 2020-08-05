@@ -8,7 +8,6 @@ bool checkGraphName(std::string& str){
     return (not(startsWith(str, "{") and endsWith(str, "}")));
 }
 
-
 bool Graph::checkVertexName(std::string& str) {
     int parantheses = 0;
     for(const char& c : str) {
@@ -63,8 +62,7 @@ Graph::Graph(std::string& g) {
         edge.insert(v1, v2);
         g = g.substr(p2);
         c = g[1];
-    }
-    vertex = vert.size();
+    }    vertex = vert.size();
     edges = edge.size();
 }
 
@@ -178,7 +176,36 @@ Graph Graph::operator!() {
 }
 
 void Graph::addVertex(std::string &name) {
+    name = trim(name);
+    if(!checkVertexName(name)){
+        throw InvalidVertexName();
+    }
+    if(v.count(name)){
+        throw VertexAlreadyExists();
+    }
+    v.insert(name);
+}
 
+void Graph::addEdge(std::string &origin, std::string &dest) {
+    origin = trim(origin);
+    dest = trim(dest);
+    if(!checkVertexName(origin) or !checkVertexName(dest)){
+        throw InvalidVertexName();
+    }
+    if(origin == dest){
+        throw SelfCircle();
+    }
+    std::pair<std::string, std::string> edge(origin, dest);
+    e.count(edge)? throw EdgeAlreadyExists() : e.insert(edge);
+}
 
+void Graph::print(std::ostream &out) {
+    for(const std::string& vert : v){
+        out << vert << std::endl;
+    }
+    out << "$" << std::endl;
+    for(const std::pair<std::string, std::string>& edge : e){
+        out << edge.first << " " << edge.second << std::endl;
+    }
 }
 
