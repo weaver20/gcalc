@@ -22,6 +22,7 @@ namespace mtm{
         std::set<std::pair<std::string, std::string>> e;
         static bool checkVertexName(std::string&);
         static bool checkGraphName(std::string&);
+        static bool checkEdgeFormat(std::string&);
 
     public:
         /**
@@ -41,7 +42,7 @@ namespace mtm{
          * Assignment operator
          * @return a reference to assigned Graph
          */
-         Graph& operator=(const Graph&);
+         Graph& operator=(const Graph);
          /**
           * D'tor
           */
@@ -65,7 +66,7 @@ namespace mtm{
             /**
             * Complement operator
             */
-            Graph operator!();
+            Graph operator!() const;
             /**
             * Add edge
             */

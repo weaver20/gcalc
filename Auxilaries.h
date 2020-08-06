@@ -26,6 +26,8 @@ std::string ltrim(std::string str);
 
 std::string trim(std::string str);
 
+int numOfOccurences(std::string& str, char ch);
+
 
 
 

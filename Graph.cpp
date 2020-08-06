@@ -3,6 +3,7 @@
 
 using namespace mtm;
 
+
 bool Graph::checkGraphName(std::string& str){
     return (startsWith(str, "{") and endsWith(str, "}"));
 }
@@ -29,50 +30,49 @@ bool Graph::checkVertexName(std::string& str) {
     return true;
 }
 
+bool Graph::checkEdgeFormat(std::string& str) {
+    return (startsWith(str, "<") and endsWith(str, ">") and numOfOccurences(str, ',') == 1);
+}
+
 Graph::Graph(std::string g) {
     if (!checkGraphName(g)){
         throw InvalidGraphString();
     }
     std::set<std::string> vert;
     std::set<std::pair<std::string, std::string>> edge;
+    v = vert;
+    e = edge;
     int delimeter_pos = g.find('|');
     std::string v_string = trim(g.substr(1, delimeter_pos - 1));
-    std::string e_string = g.substr(delimeter_pos + 1);
+    std::string e_string = trim(g.substr(delimeter_pos + 1));
     while(v_string.find(',') != -1){
         int pos = v_string.find(',');
-        std::string candidate_vertex = v_string.substr(0, pos);
-        if(!checkVertexName(candidate_vertex)){
-            throw InvalidVertexName();
-        }
-        vert.insert(candidate_vertex);
+        std::string candidate_vertex = trim(v_string.substr(0, pos));
+        addVertex(candidate_vertex);
         v_string = trim(v_string.substr(pos + 1));
     }
-    if(!checkVertexName(v_string)){
-        throw InvalidVertexName();
-    }
-    else
-    {
-        vert.insert(v_string);
+    if(!v_string.empty()){
+        addVertex(v_string);
     }
     char c = e_string[0];
     while(c != '}'){
-        int p1 = g.find('<'), p2 = g.find('>');
-        std::string sub_str = g.substr(p1, p2);
+        int p1 = e_string.find('<'), p2 = e_string.find('>');
+        std::string sub_str = e_string.substr(p1, p2 - p1 + 1);
         int delimeter = sub_str.find(',');
-        std::string v1 = sub_str.substr(0, --delimeter);
-        std::string v2 = sub_str.substr(++delimeter);
-        if(!checkVertexName(v1) or !checkVertexName(v2)){
+        if(!checkEdgeFormat(sub_str)){
             throw InvalidVertexName();
         }
-        if((!vert.count(v1)) or (!vert.count(v2))){
-            throw IllegalEdge();
-        }
-        std::pair<std::string, std::string> p(v1, v2);
-        edge.insert(p);
-        v_string = v_string.substr(p2);
-        c = v_string[1];
-    }    vertex = vert.size();
-    edges = edge.size();
+        sub_str = sub_str.substr(1);
+        sub_str.pop_back();
+        delimeter--;
+        std::string v1 = trim(sub_str.substr(0, delimeter));
+        std::string v2 = trim(sub_str.substr(delimeter + 1));
+        addEdge(v1, v2);
+        c = e_string[p2 + 1];
+        e_string = trim(e_string.substr(p2 + 1));
+    }
+    vertex = v.size();
+    edges = e.size();
 }
 
 Graph::Graph(Graph& graph): vertex(graph.vertex), edges(graph.e.size()), v(graph.v), e(graph.e) {
@@ -81,7 +81,7 @@ Graph::Graph(Graph& graph): vertex(graph.vertex), edges(graph.e.size()), v(graph
 Graph::Graph(const std::set<std::string>& v, const std::set<std::pair<std::string, std::string>>& e):vertex(v.size()), edges(e.size()),
 v(v), e(e){}
 
-Graph& Graph::operator=(const Graph& graph){
+Graph& Graph::operator=(const Graph graph){
     if(this == &graph){
         return *this;
     }
@@ -102,37 +102,27 @@ Graph Graph::operator+(Graph& graph){
 }
 
 Graph Graph::operator^(Graph& graph) {
-    std::set<std::string> inter_v = this->v;
-    std::set<std::pair<std::string, std::string>> inter_e = this->e;
-    for(auto it = graph.v.begin(); it != graph.v.end(); it++){
-        if(v.count(*it)){
-            inter_v.insert(*it);
-        }
-    }
-    for(auto it = graph.e.begin(); it != graph.e.end(); it++){
-        if(e.count(*it)){
-            inter_e.insert(*it);
-        }
-    }
-    Graph result(inter_v,inter_e);
-    return result;
+    Graph emp("{|}");
+    std::set_intersection(v.begin(),v.end(),
+                          graph.v.begin(), graph.v.end(), std::inserter(emp.v, emp.v.begin()));
+    std::set_intersection(e.begin(),e.end(),
+                         graph.e.begin(), graph.e.end(), std::inserter(emp.e, emp.e.begin()));
+    return emp;
 }
 
 Graph Graph::operator-(Graph& graph){
-    std::set<std::string> diff_v = this->v;
-    std::set<std::pair<std::string, std::string>> diff_e = this->e;
-    for(auto it = v.begin(); it != v.end(); it++){
-        if(graph.v.count(*it)){
-            diff_v.erase(*it);
+    Graph emp("{|}");
+    std::set_difference(v.begin(),v.end(),
+                        graph.v.begin(),graph.v.end(),std::inserter(emp.v,emp.v.begin()));
+    for(std::pair<std::string, std::string> edge : e){
+        try{
+            emp.addEdge(edge.first, edge.second);
+        }
+        catch (IllegalEdge& g) {
+            continue;
         }
     }
-    for(auto it = e.begin(); it != e.end(); it++){
-        if(graph.e.count(*it)){
-            diff_e.erase(*it);
-        }
-    }
-    Graph result(diff_v, diff_e);
-    return result;
+    return emp;
 }
 
 Graph Graph::operator*(Graph& graph) {
@@ -145,6 +135,7 @@ Graph Graph::operator*(Graph& graph) {
             str.append(";");
             str.append(*it2);
             str.append("]");
+            product_v.insert(str);
         }
     }
     for(auto it = e.begin(); it != e.end(); it++){
@@ -167,7 +158,7 @@ Graph Graph::operator*(Graph& graph) {
     return product;
 }
 
-Graph Graph::operator!() {
+Graph Graph::operator!() const {
     std::set<std::string> k_vert = v;
     std::set<std::pair<std::string, std::string>> k_edge;
     for(auto it = v.begin(); it != v.end(); it++){
@@ -181,8 +172,10 @@ Graph Graph::operator!() {
     std::string emp = "{ | }";
     Graph res(emp);
     res.v = v;
+    res.vertex = res.v.size();
     std::set_difference(k_edge.begin(), k_edge.end(),
                         e.begin(),e.end(), std::inserter(res.e, res.e.begin()));
+    res.edges = res.e.size();
     return res;
 }
 
@@ -205,6 +198,9 @@ void Graph::addEdge(std::string &origin, std::string &dest) {
     }
     if(origin == dest){
         throw SelfCircle();
+    }
+    if(!v.count(origin) or !v.count(dest)){
+        throw IllegalEdge();
     }
     std::pair<std::string, std::string> edge(origin, dest);
     e.count(edge)? throw ParallelEdge() : e.insert(edge);

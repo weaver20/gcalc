@@ -25,6 +25,10 @@ const char*  SelfCircle::what() const noexcept {
     return "    Error: Self circles are not allowed, please insert valid data.";
 }
 
+const char*  EmptyVertexString::what() const noexcept {
+    return "    Error: No vertexes were inserted, please insert valid data.";
+}
+
 
 
 

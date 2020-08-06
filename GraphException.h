@@ -34,4 +34,9 @@ public:
     const char* what() const noexcept override;
 };
 
+class EmptyVertexString : public Exception {
+public:
+    const char* what() const noexcept override;
+};
+
 #endif //GCALC_GRAPHEXCEPTION_H
