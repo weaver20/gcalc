@@ -10,6 +10,8 @@
 #include <utility>
 #include <algorithm>
 #include <iterator>
+#include <cctype>
+#include "CalcException.h"
 
 
 typedef enum WORKMODE {INTERACTIVE, BATCH} Mode;
@@ -25,6 +27,8 @@ std::string rtrim(std::string str);
 std::string ltrim(std::string str);
 
 std::string trim(std::string str);
+
+int findOperatorIndex(std::string&);
 
 int numOfOccurences(std::string& str, char ch);
 

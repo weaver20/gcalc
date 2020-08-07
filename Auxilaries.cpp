@@ -44,3 +44,12 @@ int numOfOccurences(std::string& str, char ch){
     }
     return cnt;
 }
+
+int findOperatorIndex(std::string& s){
+    for(auto c : s){
+        if(c == '+' or c == '-' or c == '*' or c == '^'){
+            return s.find(c);
+        }
+    }
+    throw CommandNotInFormat();
+}

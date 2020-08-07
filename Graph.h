@@ -20,9 +20,6 @@ namespace mtm{
         int edges;
         std::set<std::string> v;
         std::set<std::pair<std::string, std::string>> e;
-        static bool checkVertexName(std::string&);
-        static bool checkGraphName(std::string&);
-        static bool checkEdgeFormat(std::string&);
 
     public:
         /**
@@ -33,7 +30,7 @@ namespace mtm{
         /**
          * Copy C`tor
          */
-         Graph(Graph&);
+         Graph(const Graph&);
          /**
           * C'tor - receives vertex&edges sets and creates a directed graph accordingly
           */
@@ -42,7 +39,7 @@ namespace mtm{
          * Assignment operator
          * @return a reference to assigned Graph
          */
-         Graph& operator=(const Graph);
+         Graph& operator=(Graph);
          /**
           * D'tor
           */
@@ -79,11 +76,20 @@ namespace mtm{
             * Print function
             */
             void print(std::ostream& out);
+
+            static bool checkGraphName(const std::string&);
+            static bool checkVertexName(const std::string&);
+            static bool checkEdgeFormat(const std::string&);
+
+        static bool checkGraphName(std::string &str);
+
+        static bool checkVertexName(std::string &str);
+
+        static bool checkEdgeFormat(std::string &str);
     };
 
 
-
-
 }
+
 
 #endif //GCALC_GRAPH_H
