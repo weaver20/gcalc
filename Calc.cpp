@@ -32,6 +32,7 @@ Graph Calc::getGraph(std::string name) const{
 }
 
 void Calc::delete_graph(std::string graph_to_delete) {
+    checkLeftVariable(graph_to_delete);
     if(!graph_memory.count(graph_to_delete)){
         throw AbsentGraph();
     }

@@ -25,10 +25,13 @@ namespace mtm {
             if (c == '[') {
                 parantheses++;
             }
-            if (c == ']') {
+            else if (c == ']') {
                 parantheses--;
             }
-            if (!((islower(c)) or (isupper(c)) or (isdigit(c)))) {
+            else if(c == ';'){
+                continue;
+            }
+            else if (!((islower(c)) or (isupper(c)) or (isdigit(c)))) {
                 return false;
             }
         }
@@ -38,7 +41,6 @@ namespace mtm {
     bool Graph::checkEdgeFormat(const std::string &str) {
         return (startsWith(str, "<") and endsWith(str, ">") and numOfOccurences(str, ',') == 1);
     }
-
 }
 
     Graph::Graph(std::string g) {
@@ -51,7 +53,7 @@ namespace mtm {
         std::string e_string;
         v = vert;
         e = edge;
-        int delimeter_pos = g.find('|');
+        size_t delimeter_pos = g.find('|');
         if(delimeter_pos == std::string::npos){
             if(g.find('<') !=
                std::string::npos or g.find('>') != std::string::npos){
@@ -64,6 +66,7 @@ namespace mtm {
         else {
             v_string = trim(g.substr(1, delimeter_pos - 1));
             e_string = trim(g.substr(delimeter_pos + 1));
+            e_string.pop_back();
         }
         while (v_string.find(',') != std::string::npos){
             int pos = v_string.find(',');
@@ -76,8 +79,8 @@ namespace mtm {
         }
         if(!e_string.empty()) {
             char c = e_string[0];
-            while (c != '}') {
-                int p1 = e_string.find('<'), p2 = e_string.find('>');
+            while (c != '\0') {
+                size_t p1 = e_string.find('<'), p2 = e_string.find('>');
                 if(p1 == std::string::npos or p2 == std::string::npos){
                     throw IllegalEdge();
                 }

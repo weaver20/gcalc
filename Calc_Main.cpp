@@ -15,7 +15,7 @@ int main(int argc, char* argv[]){
     if(BATCH_MODE){
         ifstream input(argv[1]);
         ofstream output(argv[2]);
-        if(!input || output) {
+        if(!input || !output) {
             std::cerr << OpenFileError().what();
             return 0;
         }
@@ -108,47 +108,15 @@ void start(istream& in, ostream& out, Mode mode) {
             }
         }
 
-        catch (InvalidFileName &e) {
-            out << e.what();
-        }
-
-        catch (CommandNotInFormat &e) {
-            out << e.what();
-        }
-
-        catch (AbsentGraph &e) {
-            out << e.what();
-        }
-
-        catch (InvalidVertexName& e) {
-            out << e.what();
-        }
-
-        catch (AssignmentOperatorAbsence &e) {
-            out << e.what();
-        }
-
-        catch (InvalidGraphString &e) {
-            out << e.what();
-        }
-
-        catch (InvalidGraphVariable& e) {
-            out << e.what();
-        }
-
-        catch (SelfCircle& e) {
-            out << e.what();
-        }
-
-        catch (SavedWordInserted& e) {
-            out << e.what();
-        }
-
         catch (GraphException& e) {
             out << e.what();
         }
 
-        catch (CalcException &e) {
+        catch (CalcException& e) {
+            out << e.what();
+        }
+
+        catch (Exception& e) {
             out << e.what();
         }
 
@@ -160,57 +128,11 @@ void start(istream& in, ostream& out, Mode mode) {
         catch (...) {
             cout << "Error: Unknown Error 101. \n";
         }
+
         if (mode == INTERACTIVE) {
             out << "Gcalc>";
         }
-
-        /*  Calc calc;
-          std:: string graph = "G1";
-          Graph g("{v1, v2 | <v1, v2>}");
-          calc.addGraph(graph, g);*/
-
-        /*std::string str = "G1 = {v1, v2}";
-        if(str.find('<') != std::string::npos){
-            cout << "1" <<endl;
-        }
-        if(str.find('>') != std::string::npos){
-            cout << "2" << endl;
-        }
-        return 0;*/
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

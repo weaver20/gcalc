@@ -30,7 +30,7 @@ std::string ltrim(std::string str);
 
 std::string trim(std::string str);
 
-int findOperatorIndex(std::string&);
+size_t findOperatorIndex(std::string&);
 
 int numOfOccurences(const std::string& str, char ch);
 
