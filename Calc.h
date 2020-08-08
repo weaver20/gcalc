@@ -10,7 +10,6 @@ namespace mtm{
     class Calc {
 
         std::map<std::string, class Graph> graph_memory;
-        std::set<std::string> vertexes;
 
     public:
         /**

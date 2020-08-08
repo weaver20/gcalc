@@ -24,6 +24,7 @@ namespace mtm {
 }
 
 Graph Calc::getGraph(std::string name) const{
+    checkLeftVariable(name);
     if(!graph_memory.count(name)){
         throw AbsentGraph();
     }
@@ -31,7 +32,7 @@ Graph Calc::getGraph(std::string name) const{
 }
 
 void Calc::delete_graph(std::string graph_to_delete) {
-    if(graph_memory.count(graph_to_delete)){
+    if(!graph_memory.count(graph_to_delete)){
         throw AbsentGraph();
     }
     graph_memory.erase(graph_to_delete);
@@ -69,17 +70,6 @@ Graph Calc::calculate(std::string& g1_str, char oper, std::string& g2_str) const
             }
         }
     }
-}
-
-bool Calc::isVertexIn(std::string vertex){
-    if(vertexes.count(vertex)){
-        return true;
-    }
-    return false;
-}
-
-void Calc::addVertexToMemory(std::string& vertex){
-    vertexes.insert(vertex);
 }
 
 void Calc::checkSavedFunction(std::string &variable) {

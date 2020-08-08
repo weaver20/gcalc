@@ -44,28 +44,36 @@ void start(istream& in, ostream& out, Mode mode) {
             if(curr_line.empty()){
                 throw EmptyInput();
             }
-            if (curr_line == "reset") { // reset
+            if (curr_line == "reset") { // ********** RESET **********
                 calc.reset();
-            } else if (curr_line == "who") { // who
+            } else if (curr_line == "who") { // ********** WHO **********
                 cout << calc << endl;
-            } else if (startsWith(curr_line, "delete(")) { // delete
+            } else if (startsWith(curr_line, "delete")) { // ********** DELETE **********
+                std::string rest = trim(curr_line.substr(6));
+                if(rest[0] != '('){
+                    throw CommandNotInFormat();
+                }
                 std::string delete_candidate = curr_line.substr(curr_line.find('('));
                 if (delete_candidate[delete_candidate.length() - 1] != ')') {
                     throw CommandNotInFormat();
                 }
+                delete_candidate = delete_candidate.substr(1);
                 delete_candidate.pop_back();
-                calc.delete_graph(delete_candidate);
-            } else if (startsWith(curr_line, "print(")) { // print
-
+                calc.delete_graph(trim(delete_candidate));
+            } else if (startsWith(curr_line, "print")) { // ********** PRINT **********
+                std::string rest = trim(curr_line.substr(5));
+                if(rest[0] != '('){
+                    throw CommandNotInFormat();
+                }
                 std::string print_candidate = curr_line.substr(curr_line.find('(') + 1);
                 if (print_candidate[print_candidate.length() - 1] != ')') {
                     throw CommandNotInFormat();
                 }
                 print_candidate.pop_back();
                 calc.getGraph(trim(print_candidate)).print(out);
-            } else if (curr_line == "quit") { // quit
+            } else if (curr_line == "quit") { // ********** QUIT **********
                 break;
-            } else //Graph name inserted
+            } else // ********** GRAPH NAME INSERTED **********
             {
                 std::string left_variable, literals;
                 size_t assignment_pos = curr_line.find('=');
@@ -81,8 +89,9 @@ void start(istream& in, ostream& out, Mode mode) {
                 } else if (literals[0] == '!') {
                     calc.addGraph(left_variable, !calc.getGraph(trim(literals.substr(1))));
                 } else {
-                    if (findOperatorIndex(literals) == 0) {
-                        throw InvalidGraphString();
+                    if (findOperatorIndex(literals) == 0
+                    or findOperatorIndex(literals) == literals.length() - 1) {
+                        throw CommandNotInFormat();
                     }
                     size_t operator_index = findOperatorIndex(literals);
                     if (operator_index == std::string::npos) {
@@ -149,7 +158,7 @@ void start(istream& in, ostream& out, Mode mode) {
         }
 
         catch (...) {
-            cout << "Error: Unknown error 101. \n";
+            cout << "Error: Unknown Error 101. \n";
         }
         if (mode == INTERACTIVE) {
             out << "Gcalc>";
