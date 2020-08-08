@@ -4,37 +4,42 @@
 
 #include "Exception.h"
 
-class InvalidGraphString : public Exception {
+class GraphException : public Exception {
 public:
     const char* what() const noexcept override;
 };
 
-class InvalidVertexName : public Exception {
+class InvalidGraphString : public GraphException {
 public:
     const char* what() const noexcept override;
 };
 
-class VertexAlreadyExists : public Exception {
+class InvalidVertexName : public GraphException {
 public:
     const char* what() const noexcept override;
 };
 
-class IllegalEdge : public Exception {
+class VertexAlreadyExists : public GraphException {
 public:
     const char* what() const noexcept override;
 };
 
-class ParallelEdge : public Exception {
+class IllegalEdge : public GraphException {
 public:
     const char* what() const noexcept override;
 };
 
-class SelfCircle : public Exception {
+class ParallelEdge : public GraphException {
 public:
     const char* what() const noexcept override;
 };
 
-class EmptyVertexString : public Exception {
+class SelfCircle : public GraphException {
+public:
+    const char* what() const noexcept override;
+};
+
+class EmptyVertexString : public GraphException {
 public:
     const char* what() const noexcept override;
 };

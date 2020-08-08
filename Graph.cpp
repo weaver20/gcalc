@@ -78,6 +78,9 @@ namespace mtm {
             char c = e_string[0];
             while (c != '}') {
                 int p1 = e_string.find('<'), p2 = e_string.find('>');
+                if(p1 == std::string::npos or p2 == std::string::npos){
+                    throw IllegalEdge();
+                }
                 std::string sub_str = e_string.substr(p1, p2 - p1 + 1);
                 int delimeter = sub_str.find(',');
                 if (!checkEdgeFormat(sub_str)) {

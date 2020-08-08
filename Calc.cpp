@@ -82,6 +82,14 @@ void Calc::addVertexToMemory(std::string& vertex){
     vertexes.insert(vertex);
 }
 
+void Calc::checkSavedFunction(std::string &variable) {
+    for(auto command : SAVED_CALC_FUNCS){
+        if(variable == command){
+            throw SavedWordInserted();
+        }
+    }
+}
+
 
 
 

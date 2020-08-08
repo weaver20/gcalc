@@ -5,7 +5,7 @@ const char* CalcException::what() const noexcept{
 }
 
 const char* AssignmentOperatorAbsence::what() const noexcept{
-    return "    Assignment operator was not inserted. \n";
+    return "    Error: Assignment operator was not inserted. \n";
 }
 
 const char* CommandNotInFormat::what() const noexcept{
@@ -26,10 +26,16 @@ const char* GraphAlreadyInserted::what() const noexcept{
 }
 
 const char* InvalidGraphVariable::what() const noexcept{
-    return "    Error: The variable name is illegal! Please insert a valid variable name. \n";
+    return "    Error: The variable name is illegal! Please insert valid variable name. \n";
 }
 
+const char* SavedWordInserted::what() const noexcept{
+    return "    Error: The usage of calc functions as variables is illegal! Please insert valid variable name. \n";
+}
 
+const char* EmptyInput::what() const noexcept{
+    return "    Error: No input received! Please insert valid input. \n";
+}
 
 
 

@@ -41,6 +41,9 @@ void start(istream& in, ostream& out, Mode mode) {
     while (std::getline(in, curr_line)) {
         try {
             curr_line = trim(curr_line);
+            if(curr_line.empty()){
+                throw EmptyInput();
+            }
             if (curr_line == "reset") { // reset
                 calc.reset();
             } else if (curr_line == "who") { // who
@@ -70,6 +73,7 @@ void start(istream& in, ostream& out, Mode mode) {
                     throw AssignmentOperatorAbsence();
                 }
                 left_variable = trim(curr_line.substr(0, assignment_pos));
+                Calc::checkSavedFunction(left_variable);
                 Calc::checkLeftVariable(left_variable);
                 literals = trim(curr_line.substr(assignment_pos + 1));
                 if (literals[0] == '{') {
@@ -107,6 +111,10 @@ void start(istream& in, ostream& out, Mode mode) {
             out << e.what();
         }
 
+        catch (InvalidVertexName& e) {
+            out << e.what();
+        }
+
         catch (AssignmentOperatorAbsence &e) {
             out << e.what();
         }
@@ -116,6 +124,18 @@ void start(istream& in, ostream& out, Mode mode) {
         }
 
         catch (InvalidGraphVariable& e) {
+            out << e.what();
+        }
+
+        catch (SelfCircle& e) {
+            out << e.what();
+        }
+
+        catch (SavedWordInserted& e) {
+            out << e.what();
+        }
+
+        catch (GraphException& e) {
             out << e.what();
         }
 

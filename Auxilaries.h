@@ -18,7 +18,7 @@
 
 typedef enum WORKMODE {INTERACTIVE, BATCH} Mode;
 
-//std::set<std::string> CALC_FUNCS = {"print", "delete", "who", "reset", "quit"};
+const std::set<std::string> SAVED_CALC_FUNCS = {"print", "delete", "who", "reset", "quit"};
 
 bool startsWith(std::string str, std::string sub_str);
 

@@ -13,6 +13,11 @@ public:
     const char *what() const noexcept override;
 };
 
+class EmptyInput : public CalcException {
+public:
+    const char *what() const noexcept override;
+};
+
 class AssignmentOperatorAbsence : public CalcException{
 public:
     const char *what() const noexcept override;
@@ -38,6 +43,10 @@ public:
     const char *what() const noexcept override;
 };
 
+class SavedWordInserted : public CalcException{
+public:
+    const char *what() const noexcept override;
+};
 
 
 

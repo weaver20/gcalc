@@ -29,6 +29,10 @@ const char*  EmptyVertexString::what() const noexcept {
     return "    Error: No vertexes were inserted, please insert valid data. \n";
 }
 
+const char* GraphException::what() const noexcept {
+    return "    Error: Graph Exception occurred! \n";
+}
+
 
 
 

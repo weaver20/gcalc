@@ -32,7 +32,7 @@ namespace mtm{
          *  C`tor - creates an Graph according to the instructions
          * @param g - a string which represents the vertexes and edges of the graph according to the required format
          */
-        Graph(std::string g);
+        explicit Graph(std::string g);
         /**
          * Copy C`tor
          */

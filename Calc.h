@@ -55,6 +55,8 @@ namespace mtm{
 
         void addVertexToMemory(std::string& vertex);
 
+        static void checkSavedFunction(std::string& variable);
+
     };
 
 
