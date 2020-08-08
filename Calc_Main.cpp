@@ -11,10 +11,6 @@ using std::istream;
 using std::ostream;
 using namespace mtm;
 
-
-
-
-
 int main(int argc, char* argv[]){
     if(BATCH_MODE){
         ifstream input(argv[1]);
@@ -57,6 +53,7 @@ void start(istream& in, ostream& out, Mode mode) {
                 delete_candidate.pop_back();
                 calc.delete_graph(delete_candidate);
             } else if (startsWith(curr_line, "print(")) { // print
+
                 std::string print_candidate = curr_line.substr(curr_line.find('(') + 1);
                 if (print_candidate[print_candidate.length() - 1] != ')') {
                     throw CommandNotInFormat();
@@ -73,6 +70,7 @@ void start(istream& in, ostream& out, Mode mode) {
                     throw AssignmentOperatorAbsence();
                 }
                 left_variable = trim(curr_line.substr(0, assignment_pos));
+                Calc::checkLeftVariable(left_variable);
                 literals = trim(curr_line.substr(assignment_pos + 1));
                 if (literals[0] == '{') {
                     calc.addGraph(left_variable, Graph(literals));
@@ -117,6 +115,10 @@ void start(istream& in, ostream& out, Mode mode) {
             out << e.what();
         }
 
+        catch (InvalidGraphVariable& e) {
+            out << e.what();
+        }
+
         catch (CalcException &e) {
             out << e.what();
         }
@@ -133,11 +135,19 @@ void start(istream& in, ostream& out, Mode mode) {
             out << "Gcalc>";
         }
 
-
         /*  Calc calc;
           std:: string graph = "G1";
           Graph g("{v1, v2 | <v1, v2>}");
           calc.addGraph(graph, g);*/
+
+        /*std::string str = "G1 = {v1, v2}";
+        if(str.find('<') != std::string::npos){
+            cout << "1" <<endl;
+        }
+        if(str.find('>') != std::string::npos){
+            cout << "2" << endl;
+        }
+        return 0;*/
     }
 }
 

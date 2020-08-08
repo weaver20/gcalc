@@ -3,11 +3,17 @@ using namespace mtm;
 
 namespace mtm {
 
-    bool Graph::checkGraphName(std::string &str) {
+    bool Graph::checkGraphName(const std::string &str) {
+        if(str.find('|') == std::string::npos){
+            if(str.find('<') !=
+                std::string::npos or str.find('>') != std::string::npos) {
+                throw InvalidGraphString();
+            }
+        }
         return (startsWith(str, "{") and endsWith(str, "}"));
     }
 
-    bool Graph::checkVertexName(std::string &str) {
+    bool Graph::checkVertexName(const std::string &str) {
         int parantheses = 0;
         for (const char &c : str) {
             if (parantheses < 0) {
@@ -29,7 +35,7 @@ namespace mtm {
         return true;
     }
 
-    bool Graph::checkEdgeFormat(std::string &str) {
+    bool Graph::checkEdgeFormat(const std::string &str) {
         return (startsWith(str, "<") and endsWith(str, ">") and numOfOccurences(str, ',') == 1);
     }
 
@@ -41,12 +47,25 @@ namespace mtm {
         }
         std::set<std::string> vert;
         std::set<std::pair<std::string, std::string>> edge;
+        std::string v_string;
+        std::string e_string;
         v = vert;
         e = edge;
         int delimeter_pos = g.find('|');
-        std::string v_string = trim(g.substr(1, delimeter_pos - 1));
-        std::string e_string = trim(g.substr(delimeter_pos + 1));
-        while (v_string.find(',') != std::string::npos) {
+        if(delimeter_pos == std::string::npos){
+            if(g.find('<') !=
+               std::string::npos or g.find('>') != std::string::npos){
+                throw InvalidGraphString();
+            }
+            v_string = g.substr(1);
+            v_string.pop_back();
+            v_string = trim(v_string);
+        }
+        else {
+            v_string = trim(g.substr(1, delimeter_pos - 1));
+            e_string = trim(g.substr(delimeter_pos + 1));
+        }
+        while (v_string.find(',') != std::string::npos){
             int pos = v_string.find(',');
             std::string candidate_vertex = trim(v_string.substr(0, pos));
             addVertex(candidate_vertex);
@@ -55,33 +74,34 @@ namespace mtm {
         if (!v_string.empty()) {
             addVertex(v_string);
         }
-        char c = e_string[0];
-        while (c != '}') {
-            int p1 = e_string.find('<'), p2 = e_string.find('>');
-            std::string sub_str = e_string.substr(p1, p2 - p1 + 1);
-            int delimeter = sub_str.find(',');
-            if (!checkEdgeFormat(sub_str)) {
-                throw InvalidVertexName();
+        if(!e_string.empty()) {
+            char c = e_string[0];
+            while (c != '}') {
+                int p1 = e_string.find('<'), p2 = e_string.find('>');
+                std::string sub_str = e_string.substr(p1, p2 - p1 + 1);
+                int delimeter = sub_str.find(',');
+                if (!checkEdgeFormat(sub_str)) {
+                    throw InvalidVertexName();
+                }
+                sub_str = sub_str.substr(1);
+                sub_str.pop_back();
+                delimeter--;
+                std::string v1 = trim(sub_str.substr(0, delimeter));
+                std::string v2 = trim(sub_str.substr(delimeter + 1));
+                addEdge(v1, v2);
+                c = e_string[p2 + 1];
+                e_string = trim(e_string.substr(p2 + 1));
             }
-            sub_str = sub_str.substr(1);
-            sub_str.pop_back();
-            delimeter--;
-            std::string v1 = trim(sub_str.substr(0, delimeter));
-            std::string v2 = trim(sub_str.substr(delimeter + 1));
-            addEdge(v1, v2);
-            c = e_string[p2 + 1];
-            e_string = trim(e_string.substr(p2 + 1));
         }
         vertex = v.size();
         edges = e.size();
     }
 
-    Graph::Graph(const Graph &graph) : vertex(graph.vertex), edges(graph.e.size()), v(graph.v), e(graph.e) {
-    }
+    Graph::Graph(const Graph &graph) : vertex(graph.vertex), edges(graph.e.size()), v(graph.v), e(graph.e) {}
 
     Graph::Graph(const std::set<std::string> &v, const std::set<std::pair<std::string, std::string>> &e) : vertex(
-            v.size()), edges(e.size()),
-                                                                                                           v(v), e(e) {}
+            v.size()), edges(e.size()),v(v), e(e) {
+    }
 
     Graph &Graph::operator=(Graph graph) {
         if (this == &graph) {

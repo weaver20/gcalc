@@ -8,14 +8,8 @@ void Calc::reset() {
 }
 
 namespace mtm {
-
     void Calc::addGraph(std::string &name, Graph g) {
-        if(graph_memory.count(name)){
-            throw GraphAlreadyInserted();
-        }
-        name = trim(name);
-        std::pair<std::string, Graph> pair(name, g);
-        graph_memory.insert(pair);
+        graph_memory[name] = g;
     }
 }
 
@@ -48,17 +42,45 @@ Graph Calc::calculate(std::string& g1_str, char oper, std::string& g2_str) const
     switch (oper) {
         case '+':
             return g1 + g2;
-        case '^':
-            return g1 ^ g2;
         case '-':
             return g1 - g2;
+        case '^':
+            return g1 ^ g2;
         case '*':
             return g1 * g2;
-        default:
-            return Graph("|");
+        default: //We're not going to reach here ever
+            return Graph();
     }
 }
 
+ void Calc::checkLeftVariable(const std::string &name) {
+    if (name.empty()){
+        throw InvalidGraphVariable();
+    }
+
+    if(!isalpha(name[0])){
+        throw InvalidGraphVariable();
+    }
+
+    if(name.length() > 1) {
+        for (auto c : name.substr(1)) {
+            if (!isalnum(c)) {
+                throw InvalidGraphVariable();
+            }
+        }
+    }
+}
+
+bool Calc::isVertexIn(std::string vertex){
+    if(vertexes.count(vertex)){
+        return true;
+    }
+    return false;
+}
+
+void Calc::addVertexToMemory(std::string& vertex){
+    vertexes.insert(vertex);
+}
 
 
 

@@ -25,6 +25,9 @@ const char* GraphAlreadyInserted::what() const noexcept{
     return "    Error: The following graph has already been inserted to the calculator. \n";
 }
 
+const char* InvalidGraphVariable::what() const noexcept{
+    return "    Error: The variable name is illegal! Please insert a valid variable name. \n";
+}
 
 
 

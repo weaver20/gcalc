@@ -7,9 +7,11 @@
 #include <map>
 #include <cctype>
 #include <algorithm>
+#include <regex>
 #include <vector>
 #include "Auxilaries.h"
 #include "GraphException.h"
+#include "Calc.h"
 
 
 
@@ -23,10 +25,14 @@ namespace mtm{
 
     public:
         /**
+        * Default C'tor
+        */
+         Graph() = default;
+        /**
          *  C`tor - creates an Graph according to the instructions
          * @param g - a string which represents the vertexes and edges of the graph according to the required format
          */
-        explicit Graph(std::string g);
+        Graph(std::string g);
         /**
          * Copy C`tor
          */
@@ -77,15 +83,12 @@ namespace mtm{
             */
             void print(std::ostream& out);
 
-            static bool checkGraphName(const std::string&);
-            static bool checkVertexName(const std::string&);
-            static bool checkEdgeFormat(const std::string&);
+            static bool checkGraphName(const std::string &str);
 
-        static bool checkGraphName(std::string &str);
+            static bool checkVertexName(const std::string &str);
 
-        static bool checkVertexName(std::string &str);
+            static bool checkEdgeFormat(const std::string &str);
 
-        static bool checkEdgeFormat(std::string &str);
     };
 
 

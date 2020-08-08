@@ -8,7 +8,9 @@
 namespace mtm{
 
     class Calc {
-        std::map<std::string, Graph> graph_memory;
+
+        std::map<std::string, class Graph> graph_memory;
+        std::set<std::string> vertexes;
 
     public:
         /**
@@ -46,6 +48,12 @@ namespace mtm{
         Graph calculate(std::string& g1, char oper, std::string& g2) const;
 
         friend std::ostream& operator<<(std::ostream& os, Calc& calc);
+
+        static void checkLeftVariable(const std::string& name);
+
+        bool isVertexIn(std::string vertex);
+
+        void addVertexToMemory(std::string& vertex);
 
     };
 

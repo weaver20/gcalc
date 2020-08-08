@@ -35,7 +35,7 @@ bool endsWith(std::string str, std::string sub_str){
     return str.find(sub_str) == str.length() - sub_str.length();
 }
 
-int numOfOccurences(std::string& str, char ch){
+int numOfOccurences(const std::string& str, char ch){
     int cnt = 0;
     for (const char c : str){
         if(c == ch){

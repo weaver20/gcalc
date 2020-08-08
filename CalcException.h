@@ -33,6 +33,11 @@ public:
     const char *what() const noexcept override;
 };
 
+class InvalidGraphVariable : public CalcException{
+public:
+    const char *what() const noexcept override;
+};
+
 
 
 
