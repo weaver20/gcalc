@@ -6,14 +6,18 @@ DEBUG_FLAG = -DNDEBUG
 ZIP_NAME = gcalc.zip
 EXEC = graph
 PY_EXEC = libgraph.a PythonInterface.o _graph.so graph_wrap.cxx
-OBJS = GraphCalc.o Graph.o Calc.o Auxiliaries.o Exceptions.o CalcExceptions.o GraphExceptions.o
-LIB_OBJS = PythonInterface.o Graph.o GraphExceptions.o Auxiliaries.o Exceptions.o
+OBJS = Calc_Main.o Graph.o Calc.o Auxilaries.o Exception.o CalcException.o GraphException.o
+LIB_OBJS = PythonInterface.o Graph.o GraphException.o Auxilaries.o Exception.o
 PROJ_FILES = Auxiliaries.cpp Auxiliaries.h Calc.cpp Calc.h CalcExceptions.cpp CalcExceptions.h \
-Exceptions.cpp Exceptions.h Graph.cpp Graph.h GraphCalc.cpp GraphCalc.h GraphExceptions.cpp GraphExceptions.h \
- PyInterface.cpp PyInterface.h test_in.txt test_out.txt Makefile design.pdf graph.i
+Exceptions.cpp Exceptions.h Graph.cpp Graph.h Grap	hCalc.cpp Calc_Main.h GraphException.cpp GraphException.h \
+ PythonInterface.cpp PythonInterface.h Makefile graph.i
 
 $(EXEC): $(OBJS)
-	$(CXX) $(COMP_FLAG) $(DEBUG_FLAG) *.cpp -o $(EXEC)
+	$(CXX) $(COMP_FLAG) $(DEBUG_FLAG) $(OBJS) -o $(EXEC)
+
+Calc_Main.o: Calc_Main.cpp Calc_Main.h Graph.h Auxilaries.h Calc.h \
+ GraphException.h Exception.h CalcException.h
+	$(CXX) -c $(DEBUG_FLAG) $(COMP_FLAG) $^ -o Calc_Main.o
 
 Graph.o: Graph.cpp Graph.h Auxilaries.h Calc.h GraphException.h \
 Exception.h CalcException.h
@@ -24,25 +28,21 @@ Calc.o: Calc.cpp Calc.h Auxilaries.h Graph.h GraphException.h \
 	$(CXX) -c $(DEBUG_FLAG) $(COMP_FLAG) $^ -o Calc.o
 
 Exception.o: Exception.cpp Exception.h
-	$(CXX) -fPIC  -c $(DEBUG_FLAG) $(COMP_FLAG) $^ -o Exceptions.o
+	$(CXX) -fPIC  -c $(DEBUG_FLAG) $(COMP_FLAG) $^ -o Exception.o
 
 CalcException.o: CalcException.cpp CalcException.h Exception.h
-	$(CXX) -c $(DEBUG_FLAG) $(COMP_FLAG) $^ -o CalcExceptions.o
-
-GraphCalc.o: Calc_Main.cpp Calc_Main.h Graph.h Auxilaries.h Calc.h \
- GraphException.h Exception.h CalcException.h
-	$(CXX) -c $(DEBUG_FLAG) $(COMP_FLAG) $^ -o GraphCalc.o
+	$(CXX) -c $(DEBUG_FLAG) $(COMP_FLAG) $^ -o CalcException.o
 
 GraphException.o: GraphException.cpp GraphException.h Exception.h
-	$(CXX)   -fPIC -c $(DEBUG_FLAG) $(COMP_FLAG) $^ -o GraphExceptions.o
+	$(CXX)   -fPIC -c $(DEBUG_FLAG) $(COMP_FLAG) $^ -o GraphException.o
 
-Auxilaries.o: Auxilaries.cpp Calc_Main.h.h Graph.h Auxilaries.h Calc.h \
+Auxilaries.o: Auxilaries.cpp Calc_Main.h Graph.h Auxilaries.h Calc.h \
  GraphException.h Exception.h CalcException.h
-	$(CXX)  -fPIC -c $(DEBUG_FLAG) $(COMP_FLAG) $^ -o Auxiliaries.o
+	$(CXX)  -fPIC -c $(DEBUG_FLAG) $(COMP_FLAG) $^ -o Auxilaries.o
 
 PythonInterface.o: PythonInterface.cpp PythonInterface.h Auxilaries.h Graph.h Calc.h \
  GraphException.h Exception.h CalcException.h
-	$(CXX) -fPIC -c $(DEBUG_FLAG) $(COMP_FLAG) PyInterface.cpp -o PyInterface.o
+	$(CXX) -fPIC -c $(DEBUG_FLAG) $(COMP_FLAG) PythonInterface.cpp -o PythonInterface.o
 
 libgraph.a: $(LIB_OBJS)
 	ar -rs $@ $^

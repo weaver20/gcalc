@@ -6,9 +6,6 @@
 #include <set>
 #include <map>
 #include <cctype>
-#include <algorithm>
-#include <regex>
-#include <vector>
 #include "Auxilaries.h"
 #include "GraphException.h"
 #include "Calc.h"
@@ -21,7 +18,7 @@ namespace mtm{
         int vertex;
         int edges;
         std::set<std::string> v;
-        std::set<std::pair<std::string, std::string>> e;
+        std::set<std::pair<std::string, std::string> > e;
 
     public:
         /**
@@ -40,7 +37,7 @@ namespace mtm{
          /**
           * C'tor - receives vertex&edges sets and creates a directed graph accordingly
           */
-         Graph(const std::set<std::string>& v, const std::set<std::pair<std::string, std::string>>& e);
+         Graph(const std::set<std::string>& v, const std::set<std::pair<std::string, std::string> >& e);
         /**
          * Assignment operator
          * @return a reference to assigned Graph
@@ -53,19 +50,19 @@ namespace mtm{
          /**
           * Union operator
           */
-          Graph operator+(Graph&);
+          Graph operator+(Graph&) const;
           /**
            * Intersection operator
            */
-           Graph operator^(Graph&);
+           Graph operator^(Graph&) const;
            /**
            * Difference operator
            */
-           Graph operator-(Graph&);
+           Graph operator-(Graph&) const;
            /**
             * Product operator
             */
-            Graph operator*(Graph&);
+            Graph operator*(Graph&) const;
             /**
             * Complement operator
             */

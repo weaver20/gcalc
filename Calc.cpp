@@ -39,22 +39,6 @@ void Calc::delete_graph(std::string graph_to_delete) {
     graph_memory.erase(graph_to_delete);
 }
 
-Graph Calc::calculate(std::string& g1_str, char oper, std::string& g2_str) const {
-    Graph g1 = getGraph(trim(g1_str)), g2 = getGraph(trim(g2_str));
-    switch (oper) {
-        case '+':
-            return g1 + g2;
-        case '-':
-            return g1 - g2;
-        case '^':
-            return g1 ^ g2;
-        case '*':
-            return g1 * g2;
-        default: //We're not going to reach here ever
-            return Graph();
-    }
-}
-
  void Calc::checkLeftVariable(const std::string &name) {
     if (name.empty()){
         throw InvalidGraphVariable();
@@ -79,6 +63,35 @@ void Calc::checkSavedFunction(std::string &variable) {
             throw SavedWordInserted();
         }
     }
+}
+
+Graph Calc::generate(std::string g) const{
+    for(int  i = g.length() - 1; i >= 0 ; i-- ) {
+        if(isLegalOperator(g.at(i))){
+            Graph g1 = generate(trim(g.substr(0, i)));
+            Graph g2 = generate(trim(g.substr(i + 1)));
+            if(g.at(i) == '+'){
+                return g1 + g2;
+            }
+            else if(g.at(i) == '-'){
+                return g1 - g2;
+            }
+
+            else if(g.at(i) == '*'){
+                return g1 * g2;
+            }
+
+            else if(g.at(i) == '^'){
+                return g1 ^ g2;
+            }
+        }
+    }
+    if(startsWith(g, "!")) {
+        std::string complement_graph = g.substr(1);
+        return !generate(complement_graph);
+    }
+    Graph gr = getGraph(trim(g));
+    return gr;
 }
 
 

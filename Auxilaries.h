@@ -24,9 +24,11 @@ bool startsWith(std::string str, std::string sub_str);
 
 bool endsWith(std::string str, std::string sub_str);
 
-std::string rtrim(std::string str);
+bool isLegalOperator(char c);
 
-std::string ltrim(std::string str);
+std::string right_trim(std::string str);
+
+std::string left_trim(std::string str);
 
 std::string trim(std::string str);
 

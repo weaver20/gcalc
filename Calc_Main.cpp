@@ -87,14 +87,16 @@ void start(istream& in, ostream& out, Mode mode) {
                 literals = trim(curr_line.substr(assignment_pos + 1));
                 if (literals[0] == '{') {
                     calc.addGraph(left_variable, Graph(literals));
-                } else if (literals[0] == '!') {
-                    calc.addGraph(left_variable, !calc.getGraph(trim(literals.substr(1))));
-                } else {
-                    if (findOperatorIndex(literals) == 0
-                    or findOperatorIndex(literals) == literals.length() - 1) {
+                }
+                else if(literals[0] == '!'){
+                    calc.addGraph(left_variable, calc.generate(literals));
+                }
+                else {
+                    size_t operator_index = findOperatorIndex(literals);
+                    if (operator_index == 0 or findOperatorIndex(literals) == literals.length() - 1) {
                         throw CommandNotInFormat();
                     }
-                    size_t operator_index = findOperatorIndex(literals);
+                    // Assigning existing graph into another graph
                     if (operator_index == std::string::npos) {
                         calc.addGraph(left_variable,
                                       calc.getGraph(trim(literals.substr(0, literals.length()))));
@@ -103,7 +105,7 @@ void start(istream& in, ostream& out, Mode mode) {
                         g1 = trim(literals.substr(0, operator_index));
                         g2 = trim(literals.substr(operator_index + 1));
                         calc.addGraph(left_variable,
-                                      calc.calculate(g1, literals[operator_index], g2));
+                                      calc.generate(literals));
                     }
                 }
             }

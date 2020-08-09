@@ -78,8 +78,7 @@ namespace mtm {
             addVertex(v_string);
         }
         if(!e_string.empty()) {
-            char c = e_string[0];
-            while (c != '\0') {
+            while (!e_string.empty()) {
                 size_t p1 = e_string.find('<'), p2 = e_string.find('>');
                 if(p1 == std::string::npos or p2 == std::string::npos){
                     throw IllegalEdge();
@@ -95,7 +94,6 @@ namespace mtm {
                 std::string v1 = trim(sub_str.substr(0, delimeter));
                 std::string v2 = trim(sub_str.substr(delimeter + 1));
                 addEdge(v1, v2);
-                c = e_string[p2 + 1];
                 e_string = trim(e_string.substr(p2 + 1));
             }
         }
@@ -120,7 +118,7 @@ namespace mtm {
         return *this;
     }
 
-    Graph Graph::operator+(Graph &graph) {
+    Graph Graph::operator+(Graph &graph) const{
         std::set<std::string> union_v = this->v;
         std::set<std::pair<std::string, std::string>> union_e = this->e;
         union_v.insert(graph.v.begin(), graph.v.end());
@@ -129,7 +127,7 @@ namespace mtm {
         return g;
     }
 
-    Graph Graph::operator^(Graph &graph) {
+    Graph Graph::operator^(Graph &graph) const{
         Graph emp("{|}");
         std::set_intersection(v.begin(), v.end(),
                               graph.v.begin(), graph.v.end(), std::inserter(emp.v, emp.v.begin()));
@@ -138,7 +136,7 @@ namespace mtm {
         return emp;
     }
 
-    Graph Graph::operator-(Graph &graph) {
+    Graph Graph::operator-(Graph &graph) const{
         Graph emp("{|}");
         std::set_difference(v.begin(), v.end(),
                             graph.v.begin(), graph.v.end(), std::inserter(emp.v, emp.v.begin()));
@@ -153,7 +151,7 @@ namespace mtm {
         return emp;
     }
 
-    Graph Graph::operator*(Graph &graph) {
+    Graph Graph::operator*(Graph &graph) const{
         std::set<std::string> product_v;
         std::set<std::pair<std::string, std::string>> product_e;
         for (auto it = v.begin(); it != v.end(); it++) {

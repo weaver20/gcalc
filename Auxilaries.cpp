@@ -1,6 +1,6 @@
 #include "Auxilaries.h"
 
-std::string rtrim(std::string str){
+std::string right_trim(std::string str){
     if(str.empty()){
         return str;
     }
@@ -11,7 +11,7 @@ std::string rtrim(std::string str){
     return r_trimmed;
 }
 
-std::string ltrim(std::string str){
+std::string left_trim(std::string str){
     if(str.empty()){
         return str;
     }
@@ -23,8 +23,8 @@ std::string ltrim(std::string str){
 }
 
 std::string trim(std::string str){
-    std::string r_trimmed = rtrim(str);
-    return ltrim(r_trimmed);
+    std::string r_trimmed = right_trim(str);
+    return left_trim(r_trimmed);
 }
 
 bool startsWith(std::string str, std::string sub_str){
@@ -33,6 +33,13 @@ bool startsWith(std::string str, std::string sub_str){
 
 bool endsWith(std::string str, std::string sub_str){
     return str.find(sub_str) == str.length() - sub_str.length();
+}
+
+bool isLegalOperator(char c){
+    if(c == '+' or c == '-' or c == '^' or c == '*'){
+        return true;
+    }
+    return false;
 }
 
 int numOfOccurences(const std::string& str, char ch){
