@@ -85,7 +85,6 @@ namespace mtm{
             static bool checkVertexName(const std::string &str);
 
             static bool checkEdgeFormat(const std::string &str);
-
     };
 
 

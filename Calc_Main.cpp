@@ -71,7 +71,7 @@ void start(istream& in, ostream& out, Mode mode) {
                     throw CommandNotInFormat();
                 }
                 print_candidate.pop_back();
-                calc.getGraph(trim(print_candidate)).print(out);
+                calc.generate(print_candidate).print(out);
             } else if (curr_line == "quit") { // ********** QUIT **********
                 break;
             } else // ********** GRAPH NAME INSERTED **********
@@ -86,7 +86,7 @@ void start(istream& in, ostream& out, Mode mode) {
                 Calc::checkLeftVariable(left_variable);
                 literals = trim(curr_line.substr(assignment_pos + 1));
                 if (literals[0] == '{') {
-                    calc.addGraph(left_variable, Graph(literals));
+                    calc.addGraph(left_variable, calc.generate(literals));
                 }
                 else if(literals[0] == '!'){
                     calc.addGraph(left_variable, calc.generate(literals));
