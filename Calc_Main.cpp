@@ -47,8 +47,9 @@ void start(istream& in, ostream& out, Mode mode) {
             if (curr_line == "reset") { // ********** RESET **********
                 calc.reset();
             } else if (curr_line == "who") { // ********** WHO **********
-                cout << calc << endl;
-            } else if (startsWith(curr_line, "delete")) { // ********** DELETE **********
+                out << calc;
+            }
+            else if (startsWith(curr_line, "delete")) { // ********** DELETE **********
                 std::string rest = trim(curr_line.substr(6));
                 if(rest[0] != '('){
                     throw CommandNotInFormat();

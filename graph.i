@@ -1,9 +1,9 @@
-#ifndef GCALC_PYTHONINTERFACE_H
-#define GCALC_PYTHONINTERFACE_H
-
-
-#include "Auxilaries.h"
-#include "Graph.h"
+%module graph
+%include <std_string.i> 
+%include "PythonInterface.h"
+%{
+#include "PythonInterface.h"
+%}
 
 mtm::Graph* create();
 
@@ -25,6 +25,3 @@ mtm::Graph* graphProduct(mtm::Graph* graph_in1, mtm::Graph* graph_in2, mtm::Grap
 
 mtm::Graph* graphComplement(mtm::Graph* graph_in, mtm::Graph* graph_out);
 
-
-
-#endif //GCALC_PYTHONINTERFACE_H
