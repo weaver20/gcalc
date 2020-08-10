@@ -54,6 +54,10 @@ namespace mtm{
         Graph generate(std::string) const;
 
         void save(Graph, const std::string&) const;
+
+        static std::string retrieveFileName(const std::string&);
+
+        Graph load(const std::string& file_name) const;
     };
 
 

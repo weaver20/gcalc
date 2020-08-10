@@ -1,5 +1,4 @@
 %module graph
-%include <std_string.i> 
 %include "PythonInterface.h"
 %{
 #include "PythonInterface.h"
@@ -9,9 +8,9 @@ mtm::Graph* create();
 
 void destroy(mtm::Graph* g);
 
-mtm::Graph* addVertex(mtm::Graph* g, std::string v);
+mtm::Graph* addVertex(mtm::Graph* g, const char* v);
 
-mtm::Graph* addEdge(mtm::Graph* g, std::string v1, std::string v2);
+mtm::Graph* addEdge(mtm::Graph* g, const char* v1, const char* v2);
 
 void disp(mtm::Graph* g);
 
@@ -24,4 +23,3 @@ mtm::Graph* graphDifference(mtm::Graph* graph_in1, mtm::Graph* graph_in2, mtm::G
 mtm::Graph* graphProduct(mtm::Graph* graph_in1, mtm::Graph* graph_in2, mtm::Graph* graph_out);
 
 mtm::Graph* graphComplement(mtm::Graph* graph_in, mtm::Graph* graph_out);
-

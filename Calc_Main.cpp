@@ -41,17 +41,39 @@ void start(istream& in, ostream& out, Mode mode) {
     while (std::getline(in, curr_line)) {
         try {
             curr_line = trim(curr_line);
+            // ********** Checking for empty input **********
             if(curr_line.empty()){
                 throw EmptyInput();
             }
-            if (curr_line == "reset") { // ********** RESET **********
+            // ********** RESET **********
+            if (curr_line == "reset") {
                 calc.reset();
-            } else if (curr_line == "who") { // ********** WHO **********
+            }
+                // ********** WHO **********
+            else if (curr_line == "who") {
                 out << calc;
             }
-            else if (startsWith(curr_line, "delete")) { // ********** DELETE **********
+                // ********** SAVE **********
+            else if(startsWith(curr_line, "save")){
+                std::string rest = trim(curr_line.substr(4));
+                if(rest[0] != '(' or !endsWith(rest, ")")){
+                    throw CommandNotInFormat();
+                }
+                rest.pop_back();
+                rest = trim(rest.substr(1));
+                size_t delimeter_pos = rest.find(',');
+                if(delimeter_pos == std::string::npos){
+                    throw CommandNotInFormat();
+                }
+                std::string graph_data = trim(rest.substr(0, delimeter_pos));
+                std::string file_name = trim(rest.substr(delimeter_pos + 1));
+                calc.save(calc.generate(graph_data), file_name);
+                // ********** LOAD **********
+            }
+                // ********** DELETE **********
+            else if (startsWith(curr_line, "delete")) {
                 std::string rest = trim(curr_line.substr(6));
-                if(rest[0] != '('){
+                if(rest[0] != '(' or endsWith(rest, ")")){
                     throw CommandNotInFormat();
                 }
                 std::string delete_candidate = curr_line.substr(curr_line.find('('));
@@ -61,7 +83,9 @@ void start(istream& in, ostream& out, Mode mode) {
                 delete_candidate = delete_candidate.substr(1);
                 delete_candidate.pop_back();
                 calc.delete_graph(trim(delete_candidate));
-            } else if (startsWith(curr_line, "print")) { // ********** PRINT **********
+            }
+                // ********** PRINT **********
+            else if (startsWith(curr_line, "print")) {
                 std::string rest = trim(curr_line.substr(5));
                 if(rest[0] != '('){
                     throw CommandNotInFormat();
@@ -72,9 +96,13 @@ void start(istream& in, ostream& out, Mode mode) {
                 }
                 print_candidate.pop_back();
                 calc.generate(print_candidate).print(out);
-            } else if (curr_line == "quit") { // ********** QUIT **********
+            }
+                // ********** QUIT **********
+            else if (curr_line == "quit") {
                 break;
-            } else // ********** GRAPH NAME INSERTED **********
+            }
+                // ********** GRAPH NAME INSERTED **********
+            else
             {
                 std::string left_variable, literals;
                 size_t assignment_pos = curr_line.find('=');

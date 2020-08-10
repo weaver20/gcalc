@@ -25,13 +25,14 @@ void destroy(Graph* g){
     delete g;
 }
 
-Graph* addVertex(Graph* g, std::string v){
+Graph* addVertex(Graph* g, const char* v){
     if(g == nullptr){
         cout << "Invalid graph pointer was sent! Please insert a valid pointer. \n" << endl;
         return nullptr;
     }
     try{
-        g->addVertex(v);
+        std::string candidate_vertex = v;
+        g->addVertex(candidate_vertex);
     }
     catch (GraphException& e) {
         cout << e.what() << endl;
@@ -43,13 +44,14 @@ Graph* addVertex(Graph* g, std::string v){
     return g;
 }
 
-Graph* addEdge(Graph* g, std::string v1, std::string v2){
+Graph* addEdge(Graph* g, const char* v1, const char* v2){
     if(g == nullptr){
         cout << "Invalid graph pointer was sent! Please insert a valid pointer. \n" << endl;
         return nullptr;
     }
     try{
-        g->addEdge(v1, v2);
+        std::string candidate_vertex1 = v1, candidate_vertex2 = v2;
+        g->addEdge(candidate_vertex1, candidate_vertex2);
     }
     catch (GraphException& e) {
         cout << e.what() << endl;

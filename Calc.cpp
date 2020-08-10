@@ -91,6 +91,9 @@ Graph Calc::generate(std::string g) const{
         std::string complement_graph = g.substr(1);
         return !generate(trim(complement_graph));
     }
+    if(startsWith(trim(g), "load")){ // loading the graph in case it's required
+        return load(retrieveFileName(g));
+    }
     if(graph_memory.find(trim(g)) != graph_memory.end()) { //Checking whether g is a saved graph or not
         Graph gr = getGraph(trim(g));
         return gr;
@@ -110,15 +113,67 @@ void Calc::save(const Graph graph, const std::string& file_name) const{
     }
     outfile.write((const char*)&v_num, sizeof(unsigned int));
     outfile.write((const char*)&e_num, sizeof(unsigned int));
+
+    // ******** Writing vertex into binary file ********
     for(const auto& vertex : vertex_set){
-        
+        unsigned int len = vertex.length(); // Saving the vertex's length as an lvalue
+        outfile.write((const char*)&len, sizeof(unsigned  int));
+        outfile.write((const char*)vertex.c_str(), len);
     }
 
+    // ******** Writing edges into binary file ********
+    for(const auto& edge : edge_set){
+        unsigned int len = edge.first.length(); // Saving the vertex's length as an lvalue
+        const char* first = edge.first.c_str();
+        outfile.write((const char*)&len, sizeof(unsigned int));
+        outfile.write(first, len);
+        len = edge.second.length(); // Saving the vertex's length as an lvalue
+        const char* second = edge.second.c_str();
+        outfile.write((const char*)&len, sizeof(unsigned int));
+        outfile.write(second, len);
+    }
+}
 
+std::string Calc::retrieveFileName(const std::string& data) {
+    std::string rest = trim(data.substr(4));
+    if(rest[0] != '(' or endsWith(rest, ")")){
+        throw CommandNotInFormat();
+    }
+    rest.pop_back();
+    rest = trim(rest.substr(1));
+    return rest;
+}
 
-
-
-
+Graph Calc::load(const std::string& file_name) const{
+    checkFileName(file_name);
+    std::ifstream infile(file_name, std::ios::binary);
+    if(!infile){
+        throw CorruptedFile();
+    }
+    unsigned int v_num, e_num;
+    Graph loaded();
+    infile.read((char*)&v_num, sizeof(unsigned int));
+    infile.read((char*)&e_num, sizeof(unsigned int));
+    for(int i = 0; i < v_num; i++){
+        std::string v_read;
+        unsigned int len; // Saving the vertex's length as an lvalue
+        infile.read((char*)&len, sizeof(unsigned int));
+        v_read.resize(len);
+        infile.read(&v_read[0], len);
+        loaded().addVertex(v_read);
+    }
+    for(int i = 0; i < e_num; i++){
+        std::string v1_read, v2_read;
+        unsigned int len1, len2; // Saving the vertex's length as an lvalue
+        infile.read((char*)&len1, sizeof(unsigned int));
+        v1_read.resize(len1);
+        infile.read(&v1_read[0], len1);
+        infile.read((char*)&len2, sizeof(unsigned int));
+        v1_read.resize(len2);
+        infile.read(&v2_read[0], len2);
+        loaded().addEdge(v1_read, v2_read);
+    }
+    return loaded();
 }
 
 
