@@ -15,8 +15,6 @@
 namespace mtm{
 
     class Graph{
-        int vertex;
-        int edges;
         std::set<std::string> v;
         std::set<std::pair<std::string, std::string> > e;
 
@@ -37,7 +35,7 @@ namespace mtm{
          /**
           * C'tor - receives vertex&edges sets and creates a directed graph accordingly
           */
-         Graph(const std::set<std::string>& v, const std::set<std::pair<std::string, std::string> >& e);
+         Graph(std::set<std::string>  v, const std::set<std::pair<std::string, std::string> > e);
         /**
          * Assignment operator
          * @return a reference to assigned Graph
@@ -85,6 +83,14 @@ namespace mtm{
             static bool checkVertexName(const std::string &str);
 
             static bool checkEdgeFormat(const std::string &str);
+
+            int getEdgeSize() const;
+
+            int getVertexSize() const;
+
+            std::set<std::string> getVertexSet() const;
+
+            std::set<std::pair<std::string, std::string> > getEdgeSet() const;
     };
 
 

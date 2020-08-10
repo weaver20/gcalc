@@ -1,4 +1,6 @@
 #include "Graph.h"
+
+#include <utility>
 using namespace mtm;
 
 namespace mtm {
@@ -97,22 +99,16 @@ namespace mtm {
                 e_string = trim(e_string.substr(p2 + 1));
             }
         }
-        vertex = v.size();
-        edges = e.size();
     }
 
-    Graph::Graph(const Graph &graph) : vertex(graph.vertex), edges(graph.e.size()), v(graph.v), e(graph.e) {}
+    Graph::Graph(const Graph &graph) : v(graph.v), e(graph.e) {}
 
-    Graph::Graph(const std::set<std::string> &v, const std::set<std::pair<std::string, std::string>> &e) : vertex(
-            v.size()), edges(e.size()),v(v), e(e) {
-    }
+    Graph::Graph(const std::set<std::string> v, const std::set<std::pair<std::string, std::string>> e) : v(v), e(e) {}
 
     Graph &Graph::operator=(Graph graph) {
         if (this == &graph) {
             return *this;
         }
-        vertex = graph.vertex;
-        edges = graph.edges;
         v = graph.v;
         e = graph.e;
         return *this;
@@ -198,10 +194,8 @@ namespace mtm {
         std::string emp = "{ | }";
         Graph res(emp);
         res.v = v;
-        res.vertex = res.v.size();
         std::set_difference(k_edge.begin(), k_edge.end(),
                             e.begin(), e.end(), std::inserter(res.e, res.e.begin()));
-        res.edges = res.e.size();
         return res;
     }
 
@@ -241,3 +235,21 @@ namespace mtm {
             out << edge.first << " " << edge.second << std::endl;
         }
     }
+
+    int Graph::getEdgeSize() const {
+        return e.size() ;
+    }
+
+    int Graph::getVertexSize() const {
+        return v.size();
+    }
+
+    std::set<std::string> Graph::getVertexSet() const {
+        return v;
+    }
+
+    std::set<std::pair<std::string, std::string> > Graph::getEdgeSet() const{
+        return e;
+    }
+
+

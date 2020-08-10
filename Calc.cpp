@@ -7,11 +7,11 @@ void Calc::reset() {
     graph_memory.clear();
 }
 
-namespace mtm {
-    void Calc::addGraph(std::string &name, Graph g) {
-        graph_memory[name] = g;
-    }
+
+void Calc::addGraph(std::string &name, Graph g) {
+    graph_memory[name] = g;
 }
+
 
 
 namespace mtm {
@@ -66,8 +66,8 @@ void Calc::checkSavedFunction(std::string &variable) {
 }
 
 Graph Calc::generate(std::string g) const{
-    for(int  i = g.length() - 1; i >= 0 ; i-- ) {
-        // Parsing the string from left to right when in parallel ! operator has the highest priority
+    for(int  i = g.length() - 1; i >= 0; i--) {
+        // Parsing the string from left to right when in parallel () have the highest priority
         if(isLegalOperator(g.at(i))){
             Graph g1 = generate(trim(g.substr(0, i)));
             Graph g2 = generate(trim(g.substr(i + 1)));
@@ -87,11 +87,11 @@ Graph Calc::generate(std::string g) const{
             }
         }
     }
-    if(startsWith(g, "!")) { // Giving the complement operator the highest priority
+    if(startsWith(trim(g), "!")) { // Giving the complement operator the highest priority
         std::string complement_graph = g.substr(1);
-        return !generate(complement_graph);
+        return !generate(trim(complement_graph));
     }
-    if(graph_memory.find(g) != graph_memory.end()) { //Checking whether g is a saved graph or not
+    if(graph_memory.find(trim(g)) != graph_memory.end()) { //Checking whether g is a saved graph or not
         Graph gr = getGraph(trim(g));
         return gr;
     }
@@ -99,7 +99,27 @@ Graph Calc::generate(std::string g) const{
     return Graph(trim(g));
 }
 
+void Calc::save(const Graph graph, const std::string& file_name) const{
+    checkFileName(file_name);
+    unsigned int v_num = graph.getVertexSize(), e_num = graph.getEdgeSize();
+    std::set<std::string > vertex_set = graph.getVertexSet();
+    std::set<std::pair<std::string, std::string> > edge_set = graph.getEdgeSet();
+    std::ofstream outfile(file_name, std::ios_base::binary);
+    if(!outfile){
+        throw CorruptedFile();
+    }
+    outfile.write((const char*)&v_num, sizeof(unsigned int));
+    outfile.write((const char*)&e_num, sizeof(unsigned int));
+    for(const auto& vertex : vertex_set){
+        
+    }
 
+
+
+
+
+
+}
 
 
 

@@ -37,6 +37,10 @@ const char* EmptyInput::what() const noexcept{
     return "    Error: No input received! Please insert valid input. \n";
 }
 
+const char* CorruptedFile::what() const noexcept{
+    return "    Error: Corrupted file data! \n";
+}
+
 
 
 

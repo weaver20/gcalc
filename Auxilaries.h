@@ -32,9 +32,13 @@ std::string left_trim(std::string str);
 
 std::string trim(std::string str);
 
+std::string getInner(std::string&);
+
 size_t findOperatorIndex(std::string&);
 
 int numOfOccurences(const std::string& str, char ch);
+
+void checkFileName(std::string);
 
 
 

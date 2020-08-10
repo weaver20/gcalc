@@ -27,6 +27,15 @@ std::string trim(std::string str){
     return left_trim(r_trimmed);
 }
 
+std::string getInner(std::string& str){
+    if(str[0] == '(' and str[str.length() - 1] == ')'){
+        std::string inner = str.substr(1);
+        inner.pop_back();
+        return inner;
+    }
+    return str;
+}
+
 bool startsWith(std::string str, std::string sub_str){
     return str.find(sub_str) == 0;
 }
@@ -59,4 +68,15 @@ size_t findOperatorIndex(std::string& s){
         }
     }
     throw CommandNotInFormat();
+}
+
+void checkFileName(std::string file_name){
+    if(file_name.empty()){
+        throw InvalidFileName();
+    }
+    for(auto c : file_name){
+        if(c == '(' or c == ')' or c == ','){
+            throw InvalidFileName();
+        }
+    }
 }

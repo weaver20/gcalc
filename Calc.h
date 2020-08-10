@@ -2,6 +2,7 @@
 #define GCALC_CALC_H
 #include "Graph.h"
 #include "CalcException.h"
+#include <stack>
 
 
 
@@ -52,6 +53,7 @@ namespace mtm{
 
         Graph generate(std::string) const;
 
+        void save(Graph, const std::string&) const;
     };
 
 
