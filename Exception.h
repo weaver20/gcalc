@@ -8,7 +8,7 @@ class Exception : public std::exception{
         const char *what() const noexcept override;
 };
 
-class RunError : public Exception {
+class Error : public Exception {
     public:
         const char *what() const noexcept override;
 };
@@ -17,6 +17,5 @@ class OpenFileError : public Exception {
     public:
         const char *what() const noexcept override;
 };
-
 
 #endif //GCALC_EXCEPTION_H

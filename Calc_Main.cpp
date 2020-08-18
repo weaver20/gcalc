@@ -15,43 +15,69 @@ int main(int argc, char* argv[]){
     if(BATCH_MODE){
         ifstream input(argv[1]);
         ofstream output(argv[2]);
-        if(!input || !output) {
+        if (input and output) {
+            Activate(input, output, BATCH);
+        } else {
             std::cerr << OpenFileError().what();
             return 0;
         }
-        start(input, output, BATCH);
     }
     else if(SHELL_MODE){
-        start(cin, cout, INTERACTIVE);
+        Activate(cin, cout, INTERACTIVE);
     }
     else{
-        std::cerr << RunError().what();
+        std::cerr << Error().what();
         return 0;
     }
     return 0;
 }
 
 
-void start(istream& in, ostream& out, Mode mode) {
+void Activate(istream& input, ostream& output, Mode mode) {
     Calc calc;
     std::string curr_line;
     if (mode == INTERACTIVE) {
-        out << "Gcalc>";
+        output << "Gcalc> ";
     }
-    while (std::getline(in, curr_line)) {
+    while (true) {
         try {
+            if(!std::getline(input, curr_line)){
+                break;
+            }
             curr_line = trim(curr_line);
+            // ********** Checking for empty input **********
             if(curr_line.empty()){
                 throw EmptyInput();
             }
-            if (curr_line == "reset") { // ********** RESET **********
+            // ********** RESET **********
+            if (curr_line == "reset") {
                 calc.reset();
-            } else if (curr_line == "who") { // ********** WHO **********
-                out << calc;
             }
-            else if (startsWith(curr_line, "delete")) { // ********** DELETE **********
+                // ********** WHO **********
+            else if (curr_line == "who") {
+                output << calc;
+            }
+                // ********** SAVE **********
+            else if(startWith(curr_line, "save")){
+                std::string rest = trim(curr_line.substr(4));
+                if(rest[0] != '(' or !endWith(rest, ")")){
+                    throw CommandNotInFormat();
+                }
+                rest.pop_back();
+                rest = trim(rest.substr(1));
+                size_t delimeter_pos = rest.find(',');
+                if(delimeter_pos == std::string::npos){
+                    throw CommandNotInFormat();
+                }
+                std::string graph_data = trim(rest.substr(0, delimeter_pos));
+                std::string file_name = trim(rest.substr(delimeter_pos + 1));
+                calc.save(file_name, calc.generate(graph_data));
+                // ********** LOAD **********
+            }
+                // ********** DELETE **********
+            else if (startWith(curr_line, "delete")) {
                 std::string rest = trim(curr_line.substr(6));
-                if(rest[0] != '('){
+                if(rest[0] != '(' or !endWith(rest, ")")){
                     throw CommandNotInFormat();
                 }
                 std::string delete_candidate = curr_line.substr(curr_line.find('('));
@@ -61,9 +87,11 @@ void start(istream& in, ostream& out, Mode mode) {
                 delete_candidate = delete_candidate.substr(1);
                 delete_candidate.pop_back();
                 calc.delete_graph(trim(delete_candidate));
-            } else if (startsWith(curr_line, "print")) { // ********** PRINT **********
+            }
+                // ********** PRINT **********
+            else if (startWith(curr_line, "print")) {
                 std::string rest = trim(curr_line.substr(5));
-                if(rest[0] != '('){
+                if(rest[0] != '(' or !endWith(rest, ")")){
                     throw CommandNotInFormat();
                 }
                 std::string print_candidate = curr_line.substr(curr_line.find('(') + 1);
@@ -71,10 +99,14 @@ void start(istream& in, ostream& out, Mode mode) {
                     throw CommandNotInFormat();
                 }
                 print_candidate.pop_back();
-                calc.getGraph(trim(print_candidate)).print(out);
-            } else if (curr_line == "quit") { // ********** QUIT **********
+                calc.generate(print_candidate).print(output);
+            }
+                // ********** QUIT **********
+            else if (curr_line == "quit") {
                 break;
-            } else // ********** GRAPH NAME INSERTED **********
+            }
+                // ********** GRAPH NAME INSERTED **********
+            else
             {
                 std::string left_variable, literals;
                 size_t assignment_pos = curr_line.find('=');
@@ -86,15 +118,17 @@ void start(istream& in, ostream& out, Mode mode) {
                 Calc::checkLeftVariable(left_variable);
                 literals = trim(curr_line.substr(assignment_pos + 1));
                 if (literals[0] == '{') {
-                    calc.addGraph(left_variable, Graph(literals));
-                } else if (literals[0] == '!') {
-                    calc.addGraph(left_variable, !calc.getGraph(trim(literals.substr(1))));
-                } else {
-                    if (findOperatorIndex(literals) == 0
-                    or findOperatorIndex(literals) == literals.length() - 1) {
+                    calc.addGraph(left_variable, calc.generate(literals));
+                }
+                else if(literals[0] == '!'){
+                    calc.addGraph(left_variable, calc.generate(literals));
+                }
+                else {
+                    size_t operator_index = findOperatorIndex(literals);
+                    if (operator_index == 0 or findOperatorIndex(literals) == literals.length() - 1) {
                         throw CommandNotInFormat();
                     }
-                    size_t operator_index = findOperatorIndex(literals);
+                    // Assigning existing graph into another graph
                     if (operator_index == std::string::npos) {
                         calc.addGraph(left_variable,
                                       calc.getGraph(trim(literals.substr(0, literals.length()))));
@@ -103,22 +137,22 @@ void start(istream& in, ostream& out, Mode mode) {
                         g1 = trim(literals.substr(0, operator_index));
                         g2 = trim(literals.substr(operator_index + 1));
                         calc.addGraph(left_variable,
-                                      calc.calculate(g1, literals[operator_index], g2));
+                                      calc.generate(literals));
                     }
                 }
             }
         }
 
         catch (GraphException& e) {
-            out << e.what();
+            output << e.what() << "\n";
         }
 
         catch (CalcException& e) {
-            out << e.what();
+            output << e.what() << "\n";
         }
 
         catch (Exception& e) {
-            out << e.what();
+            output << e.what() << "\n";
         }
 
         catch (std::bad_alloc &e) {
@@ -131,7 +165,7 @@ void start(istream& in, ostream& out, Mode mode) {
         }
 
         if (mode == INTERACTIVE) {
-            out << "Gcalc>";
+            output << "Gcalc> ";
         }
     }
 }

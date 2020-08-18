@@ -48,6 +48,10 @@ public:
     const char *what() const noexcept override;
 };
 
+class CorruptedFile : public CalcException{
+public:
+    const char *what() const noexcept override;
+};
 
 
 
