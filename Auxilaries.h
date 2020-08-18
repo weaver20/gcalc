@@ -9,20 +9,17 @@
 #include <set>
 #include <utility>
 #include <algorithm>
-#include <iterator>
 #include <cctype>
-#include "CalcException.h"
 #include "GraphException.h"
 #include "Graph.h"
 
-
-typedef enum WORKMODE {INTERACTIVE, BATCH} Mode;
+typedef enum {INTERACTIVE, BATCH} Mode;
 
 const std::set<std::string> SAVED_CALC_FUNCS = {"print", "delete", "who", "reset", "quit"};
 
-bool startsWith(std::string str, std::string sub_str);
+bool startWith(std::string str, std::string sub_str);
 
-bool endsWith(std::string str, std::string sub_str);
+bool endWith(std::string str, std::string sub_str);
 
 bool isLegalOperator(char c);
 

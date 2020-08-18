@@ -15,31 +15,35 @@ int main(int argc, char* argv[]){
     if(BATCH_MODE){
         ifstream input(argv[1]);
         ofstream output(argv[2]);
-        if(!input || !output) {
+        if (input and output) {
+            Activate(input, output, BATCH);
+        } else {
             std::cerr << OpenFileError().what();
             return 0;
         }
-        start(input, output, BATCH);
     }
     else if(SHELL_MODE){
-        start(cin, cout, INTERACTIVE);
+        Activate(cin, cout, INTERACTIVE);
     }
     else{
-        std::cerr << RunError().what();
+        std::cerr << Error().what();
         return 0;
     }
     return 0;
 }
 
 
-void start(istream& in, ostream& out, Mode mode) {
+void Activate(istream& input, ostream& output, Mode mode) {
     Calc calc;
     std::string curr_line;
     if (mode == INTERACTIVE) {
-        out << "Gcalc>";
+        output << "Gcalc> ";
     }
-    while (std::getline(in, curr_line)) {
+    while (true) {
         try {
+            if(!std::getline(input, curr_line)){
+                break;
+            }
             curr_line = trim(curr_line);
             // ********** Checking for empty input **********
             if(curr_line.empty()){
@@ -51,12 +55,12 @@ void start(istream& in, ostream& out, Mode mode) {
             }
                 // ********** WHO **********
             else if (curr_line == "who") {
-                out << calc;
+                output << calc;
             }
                 // ********** SAVE **********
-            else if(startsWith(curr_line, "save")){
+            else if(startWith(curr_line, "save")){
                 std::string rest = trim(curr_line.substr(4));
-                if(rest[0] != '(' or !endsWith(rest, ")")){
+                if(rest[0] != '(' or !endWith(rest, ")")){
                     throw CommandNotInFormat();
                 }
                 rest.pop_back();
@@ -67,13 +71,13 @@ void start(istream& in, ostream& out, Mode mode) {
                 }
                 std::string graph_data = trim(rest.substr(0, delimeter_pos));
                 std::string file_name = trim(rest.substr(delimeter_pos + 1));
-                calc.save(calc.generate(graph_data), file_name);
+                calc.save(file_name, calc.generate(graph_data));
                 // ********** LOAD **********
             }
                 // ********** DELETE **********
-            else if (startsWith(curr_line, "delete")) {
+            else if (startWith(curr_line, "delete")) {
                 std::string rest = trim(curr_line.substr(6));
-                if(rest[0] != '(' or endsWith(rest, ")")){
+                if(rest[0] != '(' or !endWith(rest, ")")){
                     throw CommandNotInFormat();
                 }
                 std::string delete_candidate = curr_line.substr(curr_line.find('('));
@@ -85,9 +89,9 @@ void start(istream& in, ostream& out, Mode mode) {
                 calc.delete_graph(trim(delete_candidate));
             }
                 // ********** PRINT **********
-            else if (startsWith(curr_line, "print")) {
+            else if (startWith(curr_line, "print")) {
                 std::string rest = trim(curr_line.substr(5));
-                if(rest[0] != '('){
+                if(rest[0] != '(' or !endWith(rest, ")")){
                     throw CommandNotInFormat();
                 }
                 std::string print_candidate = curr_line.substr(curr_line.find('(') + 1);
@@ -95,7 +99,7 @@ void start(istream& in, ostream& out, Mode mode) {
                     throw CommandNotInFormat();
                 }
                 print_candidate.pop_back();
-                calc.generate(print_candidate).print(out);
+                calc.generate(print_candidate).print(output);
             }
                 // ********** QUIT **********
             else if (curr_line == "quit") {
@@ -140,15 +144,15 @@ void start(istream& in, ostream& out, Mode mode) {
         }
 
         catch (GraphException& e) {
-            out << e.what();
+            output << e.what() << "\n";
         }
 
         catch (CalcException& e) {
-            out << e.what();
+            output << e.what() << "\n";
         }
 
         catch (Exception& e) {
-            out << e.what();
+            output << e.what() << "\n";
         }
 
         catch (std::bad_alloc &e) {
@@ -161,7 +165,7 @@ void start(istream& in, ostream& out, Mode mode) {
         }
 
         if (mode == INTERACTIVE) {
-            out << "Gcalc>";
+            output << "Gcalc> ";
         }
     }
 }

@@ -1,6 +1,5 @@
 #include "Graph.h"
 
-#include <utility>
 using namespace mtm;
 
 namespace mtm {
@@ -12,11 +11,17 @@ namespace mtm {
                 throw InvalidGraphString();
             }
         }
-        return (startsWith(str, "{") and endsWith(str, "}"));
+        return (startWith(str, "{") and endWith(str, "}"));
     }
 
     bool Graph::checkVertexName(const std::string &str) {
         int parantheses = 0;
+        if(str.empty()){
+            return false;
+        }
+        if(isdigit(str[0])){
+            return false;
+        }
         for (const char &c : str) {
             if (parantheses < 0) {
                 return false;
@@ -37,11 +42,14 @@ namespace mtm {
                 return false;
             }
         }
+        if(parantheses < 0){
+            return false;
+        }
         return true;
     }
 
     bool Graph::checkEdgeFormat(const std::string &str) {
-        return (startsWith(str, "<") and endsWith(str, ">") and numOfOccurences(str, ',') == 1);
+        return (startWith(str, "<") and endWith(str, ">") and numOfOccurences(str, ',') == 1);
     }
 }
 
@@ -80,6 +88,9 @@ namespace mtm {
             addVertex(v_string);
         }
         if(!e_string.empty()) {
+            if(e_string[0] != '<'){
+                throw IllegalEdge();
+            }
             while (!e_string.empty()) {
                 size_t p1 = e_string.find('<'), p2 = e_string.find('>');
                 if(p1 == std::string::npos or p2 == std::string::npos){

@@ -36,11 +36,11 @@ std::string getInner(std::string& str){
     return str;
 }
 
-bool startsWith(std::string str, std::string sub_str){
+bool startWith(std::string str, std::string sub_str){
     return str.find(sub_str) == 0;
 }
 
-bool endsWith(std::string str, std::string sub_str){
+bool endWith(std::string str, std::string sub_str){
     return str.find(sub_str) == str.length() - sub_str.length();
 }
 
@@ -67,7 +67,7 @@ size_t findOperatorIndex(std::string& s){
             return s.find(c);
         }
     }
-    throw CommandNotInFormat();
+    return std::string::npos;
 }
 
 void checkFileName(std::string file_name){

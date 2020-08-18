@@ -12,8 +12,6 @@ void Calc::addGraph(std::string &name, Graph g) {
     graph_memory[name] = g;
 }
 
-
-
 namespace mtm {
     std::ostream &operator<<(std::ostream &os, Calc &calc) {
         for (const auto &pair : calc.graph_memory) {
@@ -87,11 +85,11 @@ Graph Calc::generate(std::string g) const{
             }
         }
     }
-    if(startsWith(trim(g), "!")) { // Giving the complement operator the highest priority
+    if(startWith(trim(g), "!")) { // Giving the complement operator the highest priority
         std::string complement_graph = g.substr(1);
         return !generate(trim(complement_graph));
     }
-    if(startsWith(trim(g), "load")){ // loading the graph in case it's required
+    if(startWith(trim(g), "load")){ // loading the graph in case it's required
         return load(retrieveFileName(g));
     }
     if(graph_memory.find(trim(g)) != graph_memory.end()) { //Checking whether g is a saved graph or not
@@ -102,7 +100,7 @@ Graph Calc::generate(std::string g) const{
     return Graph(trim(g));
 }
 
-void Calc::save(const Graph graph, const std::string& file_name) const{
+void Calc::save(const std::string& file_name, const Graph graph) const{
     checkFileName(file_name);
     unsigned int v_num = graph.getVertexSize(), e_num = graph.getEdgeSize();
     std::set<std::string > vertex_set = graph.getVertexSet();
@@ -117,7 +115,7 @@ void Calc::save(const Graph graph, const std::string& file_name) const{
     // ******** Writing vertex into binary file ********
     for(const auto& vertex : vertex_set){
         unsigned int len = vertex.length(); // Saving the vertex's length as an lvalue
-        outfile.write((const char*)&len, sizeof(unsigned  int));
+        outfile.write((const char*)&len, sizeof(unsigned int));
         outfile.write((const char*)vertex.c_str(), len);
     }
 
@@ -136,8 +134,8 @@ void Calc::save(const Graph graph, const std::string& file_name) const{
 
 std::string Calc::retrieveFileName(const std::string& data) {
     std::string rest = trim(data.substr(4));
-    if(rest[0] != '(' or endsWith(rest, ")")){
-        throw CommandNotInFormat();
+    if(rest[0] != '(' or endWith(rest, ")")){
+        throw InvalidFileName();
     }
     rest.pop_back();
     rest = trim(rest.substr(1));
@@ -151,18 +149,19 @@ Graph Calc::load(const std::string& file_name) const{
         throw CorruptedFile();
     }
     unsigned int v_num, e_num;
-    Graph loaded();
+    Graph loaded;
     infile.read((char*)&v_num, sizeof(unsigned int));
     infile.read((char*)&e_num, sizeof(unsigned int));
-    for(int i = 0; i < v_num; i++){
+    for(unsigned int i = 0; i < v_num; i++){
         std::string v_read;
         unsigned int len; // Saving the vertex's length as an lvalue
         infile.read((char*)&len, sizeof(unsigned int));
         v_read.resize(len);
         infile.read(&v_read[0], len);
-        loaded().addVertex(v_read);
+        loaded.addVertex(v_read);
     }
-    for(int i = 0; i < e_num; i++){
+
+    for(unsigned int i = 0; i < e_num; i++){
         std::string v1_read, v2_read;
         unsigned int len1, len2; // Saving the vertex's length as an lvalue
         infile.read((char*)&len1, sizeof(unsigned int));
@@ -171,9 +170,9 @@ Graph Calc::load(const std::string& file_name) const{
         infile.read((char*)&len2, sizeof(unsigned int));
         v1_read.resize(len2);
         infile.read(&v2_read[0], len2);
-        loaded().addEdge(v1_read, v2_read);
+        loaded.addEdge(v1_read, v2_read);
     }
-    return loaded();
+    return loaded;
 }
 
 
